@@ -1,0 +1,161 @@
+// ACA Nursery Operations Platform - Prisma Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// String constants used as enums:
+// UserRole: SUPER_ADMIN | BRANCH_MANAGER | STAFF | MAINTENANCE
+// BranchStatus: ACTIVE | INACTIVE
+// ClassLevel: NURSERY | KG1 | KG2
+// StudentStatus: ACTIVE | WITHDRAWN
+// AttendanceStatus: PRESENT | ABSENT
+// MaintenanceStatus: NEW | IN_PROGRESS | COMPLETED
+// Priority: LOW | MEDIUM | HIGH
+// PaymentStatus: PAID | UNPAID
+// ExpenseCategory: RENT | SALARIES | OPERATIONS | MAINTENANCE | OTHER
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("STAFF")
+  branchId     String?
+  branch       Branch?  @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  dailyLogs           DailyLog[]
+  maintenanceRequests MaintenanceRequest[]
+  expenses            Expense[]
+}
+
+model Branch {
+  id         String   @id @default(cuid())
+  name       String   @unique
+  location   String
+  capacity   Int
+  numClasses Int
+  status     String   @default("ACTIVE")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  users               User[]
+  classes             Class[]
+  students            Student[]
+  maintenanceRequests MaintenanceRequest[]
+  expenses            Expense[]
+}
+
+model Class {
+  id        String   @id @default(cuid())
+  name      String
+  level     String
+  capacity  Int
+  branchId  String
+  branch    Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  students  Student[]
+  dailyLogs DailyLog[]
+
+  @@unique([name, branchId])
+}
+
+model Student {
+  id               String   @id @default(cuid())
+  name             String
+  age              Int
+  branchId         String
+  branch           Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  classId          String
+  class            Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  status           String   @default("ACTIVE")
+  registrationDate DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  attendances Attendance[]
+  fees        Fee[]
+}
+
+model Attendance {
+  id        String   @id @default(cuid())
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  date      DateTime
+  status    String
+  createdAt DateTime @default(now())
+
+  @@unique([studentId, date])
+}
+
+model DailyLog {
+  id                String   @id @default(cuid())
+  classId           String
+  class             Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  date              DateTime
+  studentsPresent   Int
+  operationalStatus Boolean
+  note              String?
+  submittedById     String
+  submittedBy       User     @relation(fields: [submittedById], references: [id], onDelete: Restrict)
+  createdAt         DateTime @default(now())
+
+  @@unique([classId, date])
+}
+
+model MaintenanceRequest {
+  id          String   @id @default(cuid())
+  branchId    String
+  branch      Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  type        String
+  description String
+  priority    String   @default("MEDIUM")
+  status      String   @default("NEW")
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Fee {
+  id            String    @id @default(cuid())
+  studentId     String
+  student       Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  amount        Float
+  paymentStatus String    @default("UNPAID")
+  paymentDate   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  branchId    String
+  branch      Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  category    String
+  amount      Float
+  date        DateTime
+  description String?
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt   DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
