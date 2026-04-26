@@ -1,4 +1,6 @@
 export type UserRole = 'SUPER_ADMIN' | 'BRANCH_MANAGER' | 'STAFF' | 'MAINTENANCE';
+export type BranchStatus = 'ACTIVE' | 'INACTIVE';
+export type ClassLevel = 'NURSERY' | 'KG1' | 'KG2';
 
 export interface User {
   id: string;
