@@ -5,7 +5,6 @@
     "start:dev": "nest start --watch",
     "start:prod": "node dist/main",
     "build": "nest build",
-    "postinstall": "prisma generate",
     "deploy": "prisma migrate deploy && node dist/main",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
