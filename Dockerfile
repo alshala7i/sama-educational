@@ -15,9 +15,12 @@ COPY backend/tsconfig.json backend/tsconfig.build.json backend/nest-cli.json ./
 COPY backend/prisma ./prisma
 RUN npx prisma generate
 
-# Copy source and build
+# Copy source and build NestJS app
 COPY backend/src ./src
 RUN npx nest build
+
+# Run migrations and seed at BUILD time (baked into the image for SQLite)
+RUN npx prisma migrate deploy && npx ts-node prisma/seed.ts
 
 EXPOSE 3001
 
