@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 
-COPY tsconfig.json ./
+COPY tsconfig.json nest-cli.json ./
 COPY prisma ./prisma
 COPY src ./src
 
