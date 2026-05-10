@@ -8,7 +8,7 @@ const nextConfig = {
   // In development: proxies to localhost:3001
   // In production (Vercel): proxies to the Railway backend via BACKEND_URL env var
   async rewrites() {
-    const backendUrl = process.env.BACKEND_URL || 'https://backend-production-a6cb.up.railway.app';
+    const backendUrl = process.env.BACKEND_URL || 'https://sama-educational-production.up.railway.app';
     return [
       {
         source: '/api/:path*',
@@ -18,4 +18,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+modu
