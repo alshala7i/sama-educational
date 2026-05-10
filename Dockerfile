@@ -5,7 +5,7 @@ WORKDIR /app
 # Copy backend package files
 COPY backend/package.json backend/package-lock.json ./
 
-# Install ALL deps including devDependencies (needed for nest build, prisma cli, typescript)
+# Install ALL deps including devDependencies (needed for nest build, prisma cli, typescript, ts-node)
 RUN npm ci --include=dev
 
 # Copy build config
