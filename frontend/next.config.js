@@ -18,4 +18,4 @@ const nextConfig = {
   },
 };
 
-modu
+module.exports = nextConfig;
