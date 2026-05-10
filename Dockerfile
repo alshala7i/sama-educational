@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:20
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ COPY backend/src ./src
 RUN npx nest build
 
 # Run migrations and seed at BUILD time (baked into the image for SQLite)
-RUN npx prisma migrate deploy && npx ts-node prisma/seed.ts
+RUN npx prisma migrate deploy && npx ts-node --project tsconfig.json prisma/seed.ts
 
 EXPOSE 3001
 
