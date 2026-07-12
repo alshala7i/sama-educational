@@ -45,6 +45,25 @@ export enum PaymentStatus {
   UNPAID = 'UNPAID',
 }
 
+export enum DocumentType {
+  LICENSE = 'LICENSE',
+  CONTRACT = 'CONTRACT',
+}
+
+export enum VisitType {
+  IN_PERSON = 'IN_PERSON',
+  PHONE = 'PHONE',
+}
+
+export enum FollowUpStatus {
+  PENDING = 'PENDING',
+  CONTACTED = 'CONTACTED',
+  INTERESTED = 'INTERESTED',
+  REGISTERED = 'REGISTERED',
+  NOT_INTERESTED = 'NOT_INTERESTED',
+  NO_RESPONSE = 'NO_RESPONSE',
+}
+
 export enum ExpenseCategory {
   RENT = 'RENT',
   SALARIES = 'SALARIES',

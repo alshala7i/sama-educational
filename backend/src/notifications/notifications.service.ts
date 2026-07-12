@@ -103,6 +103,8 @@ export class NotificationsService {
       }
     }
 
+    await this.notifyExpiringDocuments(users);
+
     const openMaintenance = await this.prisma.maintenanceRequest.count({
       where: {
         status: {
@@ -119,6 +121,58 @@ export class NotificationsService {
           'OPEN_MAINTENANCE',
           `${openMaintenance} maintenance requests are open`,
         );
+      }
+    }
+  }
+
+  /**
+   * Notify SUPER_ADMINs and the relevant BRANCH_MANAGER about branch
+   * licenses/contracts that are expired or expiring within 60 days.
+   */
+  private async notifyExpiringDocuments(users: any[]) {
+    const WARNING_DAYS = 60;
+    const now = new Date();
+    const threshold = new Date(now.getTime() + WARNING_DAYS * 24 * 60 * 60 * 1000);
+
+    const documents = await this.prisma.branchDocument.findMany({
+      where: { expiryDate: { lte: threshold } },
+      include: { branch: { select: { id: true, name: true } } },
+    });
+
+    if (documents.length === 0) return;
+
+    const superAdmins = users.filter((u) => u.role === 'SUPER_ADMIN');
+
+    for (const doc of documents) {
+      const isExpired = new Date(doc.expiryDate) < now;
+      const daysRemaining = Math.ceil(
+        (new Date(doc.expiryDate).getTime() - now.getTime()) / (24 * 60 * 60 * 1000),
+      );
+
+      const type = isExpired ? 'DOCUMENT_EXPIRED' : 'DOCUMENT_EXPIRING';
+      const message = isExpired
+        ? `Document "${doc.name}" (${doc.branch.name}) expired on ${new Date(doc.expiryDate).toISOString().slice(0, 10)}`
+        : `Document "${doc.name}" (${doc.branch.name}) expires in ${daysRemaining} days`;
+
+      const recipients = [
+        ...superAdmins,
+        ...users.filter((u) => u.role === 'BRANCH_MANAGER' && u.branchId === doc.branchId),
+      ];
+
+      for (const recipient of recipients) {
+        // Avoid duplicate unread notifications for the same document state
+        const existing = await this.prisma.notification.findFirst({
+          where: {
+            userId: recipient.id,
+            type,
+            message,
+            isRead: false,
+          },
+        });
+
+        if (!existing) {
+          await this.create(recipient.id, type, message);
+        }
       }
     }
   }
