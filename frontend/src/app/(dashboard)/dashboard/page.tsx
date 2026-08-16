@@ -5,7 +5,7 @@ import api from '@/lib/api';
 import { StatCard } from '@/components/ui/StatCard';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Users, Building2, TrendingUp, Wallet, AlertCircle, FileText, BookOpen, CalendarCheck, ArrowUpRight, MapPin, UserCheck, UserX } from 'lucide-react';
+import { Users, Building2, TrendingUp, Wallet, AlertCircle, FileText, BookOpen, CalendarCheck, ArrowUpRight, MapPin, UserCheck, UserX, ClipboardList } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Link from 'next/link';
@@ -161,29 +161,44 @@ export default function DashboardPage() {
             const rate = total > 0 ? Math.round((present / total) * 100) : 0;
 
             const theme = rate >= 80
-              ? { bg: 'from-emerald-500 to-teal-600' }
+              ? {
+                  bg: 'from-emerald-500 to-teal-600',
+                  border: 'border-emerald-300',
+                  ring: 'ring-emerald-100 hover:ring-emerald-200',
+                  accent: 'bg-emerald-500',
+                }
               : rate >= 50
-              ? { bg: 'from-amber-400 to-orange-500' }
-              : { bg: 'from-rose-400 to-red-500' };
+              ? {
+                  bg: 'from-amber-400 to-orange-500',
+                  border: 'border-amber-300',
+                  ring: 'ring-amber-100 hover:ring-amber-200',
+                  accent: 'bg-amber-400',
+                }
+              : {
+                  bg: 'from-rose-400 to-red-500',
+                  border: 'border-rose-300',
+                  ring: 'ring-rose-100 hover:ring-rose-200',
+                  accent: 'bg-rose-400',
+                };
 
             const presentPct = total > 0 ? (present / total) * 100 : 0;
             const absentPct  = total > 0 ? (absent  / total) * 100 : 0;
 
             return (
               <div key={branch.id}
-                className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all">
+                className={`bg-white rounded-2xl border-2 ${theme.border} ring-4 ${theme.ring} shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden`}>
 
                 <div className={`bg-gradient-to-l ${theme.bg} px-5 py-4 flex items-center justify-between`}>
                   <div className="min-w-0">
-                    <h3 className="text-white font-bold text-sm leading-tight truncate">{branch.name}</h3>
-                    <div className="flex items-center gap-1 mt-0.5">
-                      <MapPin size={10} className="text-white opacity-70 flex-shrink-0" />
-                      <span className="text-white text-xs opacity-70 truncate">{branch.location}</span>
+                    <h3 className="text-white font-black text-base leading-tight truncate drop-shadow-sm">{branch.name}</h3>
+                    <div className="flex items-center gap-1 mt-1">
+                      <MapPin size={11} className="text-white opacity-80 flex-shrink-0" />
+                      <span className="text-white text-xs opacity-80 truncate">{branch.location}</span>
                     </div>
                   </div>
-                  <div className="bg-white bg-opacity-20 rounded-xl px-3 py-1.5 text-center flex-shrink-0 mx-3">
+                  <div className="bg-white bg-opacity-25 backdrop-blur-sm rounded-xl px-3 py-1.5 text-center flex-shrink-0 mx-3 border border-white border-opacity-30">
                     <p className="text-white text-2xl font-black leading-none">{rate}%</p>
-                    <p className="text-white text-xs opacity-80 mt-0.5">{t.dashboard.attendanceRate}</p>
+                    <p className="text-white text-xs opacity-90 mt-0.5">{t.dashboard.attendanceRate}</p>
                   </div>
                 </div>
 
@@ -202,8 +217,8 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 divide-x divide-x-reverse divide-gray-100 px-2 pb-4 mt-2">
-                  <div className="text-center px-2 py-2">
+                <div className="grid grid-cols-4 divide-x divide-x-reverse divide-gray-100 px-2 pb-4 mt-2">
+                  <div className="text-center px-1 py-2">
                     <div className="flex items-center justify-center gap-1 mb-1">
                       <span className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" />
                       <span className="text-2xl font-black text-gray-900 leading-none">{present}</span>
@@ -214,7 +229,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
 
-                  <div className="text-center px-2 py-2">
+                  <div className="text-center px-1 py-2">
                     <div className="flex items-center justify-center gap-1 mb-1">
                       <span className="w-2 h-2 rounded-full bg-rose-400 flex-shrink-0" />
                       <span className="text-2xl font-black text-gray-900 leading-none">{absent}</span>
@@ -225,7 +240,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
 
-                  <div className="text-center px-2 py-2">
+                  <div className="text-center px-1 py-2">
                     <div className="flex items-center justify-center gap-1 mb-1">
                       <span className="w-2 h-2 rounded-full bg-gray-300 flex-shrink-0" />
                       <span className="text-2xl font-black text-gray-400 leading-none">{notRecorded}</span>
@@ -235,6 +250,20 @@ export default function DashboardPage() {
                       {t.dashboard.notRecorded}
                     </span>
                   </div>
+
+                  <Link href="/visitors" className="text-center px-1 py-2 rounded-xl hover:bg-blue-50 transition group/visitors">
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
+                      <span className="text-2xl font-black text-blue-600 leading-none">{branch.visitorsToday ?? 0}</span>
+                    </div>
+                    <span className="text-xs text-gray-500 flex items-center justify-center gap-1 group-hover/visitors:text-blue-600">
+                      <ClipboardList size={11} className="text-blue-500" />
+                      {t.dashboard.visitorsToday}
+                    </span>
+                    <span className="block text-[10px] text-gray-400 mt-0.5">
+                      {t.dashboard.visitorsTotal.replace('{count}', String(branch.visitorsTotal ?? 0))}
+                    </span>
+                  </Link>
                 </div>
               </div>
             );

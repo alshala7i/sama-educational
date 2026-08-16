@@ -155,6 +155,17 @@ export class DashboardService {
           },
         });
 
+        const visitorsToday = await this.prisma.visitor.count({
+          where: {
+            branchId: branch.id,
+            visitDate: { gte: today, lt: tomorrow },
+          },
+        });
+
+        const visitorsTotal = await this.prisma.visitor.count({
+          where: { branchId: branch.id },
+        });
+
         const totalStudents = branch._count.students;
         const attendanceRate = totalStudents > 0
           ? Math.round((presentCount / totalStudents) * 100)
@@ -170,6 +181,8 @@ export class DashboardService {
           absentToday: absentCount,
           notRecorded: totalStudents - presentCount - absentCount,
           attendanceRate,
+          visitorsToday,
+          visitorsTotal,
         };
       }),
     );

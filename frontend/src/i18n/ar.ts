@@ -160,6 +160,8 @@ const ar: TranslationKeys = {
     presentToday: 'حاضر',
     absentToday: 'غائب',
     notRecorded: 'لم يُسجَّل',
+    visitorsToday: 'زيارات اليوم',
+    visitorsTotal: 'الإجمالي: {count}',
     revenueChart: 'الإيرادات مقابل المصروفات',
     chartSubtitle: 'آخر 6 أشهر',
     revenue: 'الإيرادات',

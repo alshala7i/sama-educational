@@ -158,6 +158,8 @@ const en = {
     presentToday: 'Present',
     absentToday: 'Absent',
     notRecorded: 'Not Recorded',
+    visitorsToday: 'Visitors Today',
+    visitorsTotal: 'Total: {count}',
     revenueChart: 'Revenue vs Expenses',
     chartSubtitle: 'Last 12 months',
     revenue: 'Revenue',
