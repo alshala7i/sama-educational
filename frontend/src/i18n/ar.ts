@@ -159,7 +159,7 @@ const ar: TranslationKeys = {
     attendanceRate: 'نسبة الحضور',
     presentToday: 'حاضر',
     absentToday: 'غائب',
-    notRecorded: 'لم يُسجَّل',
+    notRecorded: 'شاغر',
     visitorsToday: 'زيارات اليوم',
     visitorsTotal: 'الإجمالي: {count}',
     revenueChart: 'الإيرادات مقابل المصروفات',

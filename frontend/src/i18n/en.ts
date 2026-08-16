@@ -157,7 +157,7 @@ const en = {
     attendanceRate: 'Attendance Rate',
     presentToday: 'Present',
     absentToday: 'Absent',
-    notRecorded: 'Not Recorded',
+    notRecorded: 'Vacant',
     visitorsToday: 'Visitors Today',
     visitorsTotal: 'Total: {count}',
     revenueChart: 'Revenue vs Expenses',
