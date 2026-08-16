@@ -54,11 +54,20 @@ model Branch {
   expenses            Expense[]
   documents           BranchDocument[]
   visitors            Visitor[]
+  dailyReports        DailyReport[]
+  issues              BranchIssue[]
 }
 
 // DocumentType: LICENSE | CONTRACT
-// VisitType: IN_PERSON | PHONE
-// FollowUpStatus: PENDING | CONTACTED | INTERESTED | REGISTERED | NOT_INTERESTED | NO_RESPONSE
+// VisitType: IN_PERSON | PHONE | WHATSAPP
+// FollowUpStatus: PENDING | CONTACTED | INTERESTED | RESCHEDULED | REGISTERED | NOT_INTERESTED | NO_RESPONSE
+// ReferralSource: SOCIAL_MEDIA | BOOTH_CAMPAIGN | FRIEND_WORD_OF_MOUTH | PARENT_REFERRAL | BANNER_OUTDOOR | WALK_IN | WHATSAPP | GOOGLE_SEARCH | OTHER
+// ProgramType: ACADEMIC_YEAR | SUMMER_CAMP
+// OverallStatus: EXCELLENT | GOOD | NEEDS_ATTENTION | CRITICAL
+// IssueDepartment: OPERATIONS | STUDENTS | PARENTS | STAFF | MAINTENANCE | ENROLLMENT | OTHER
+// IssueType: RESIGNATION | TERMINATION | STUDENT_INCIDENT | STUDENT_ABSENCE | PARENT_COMPLAINT | PARENT_SUGGESTION | STAFF_ABSENCE | STAFF_CONDUCT | MAINTENANCE_ISSUE | REQUEST | OTHER
+// IssueSeverity: LOW | MEDIUM | HIGH | URGENT
+// IssueStatus: OPEN | IN_PROGRESS | RESOLVED
 model BranchDocument {
   id           String   @id @default(cuid())
   branchId     String
@@ -92,9 +101,74 @@ model Visitor {
   guardianFeedback  String?
   notes             String?
   followUpStatus    String    @default("PENDING")
+  heardAboutUsDetail String?
+  targetBranch      String?
+  isTransfer        Boolean   @default(false)
+  transferFrom      String?
+  programType       String?
+  academicYear      String?
+  managementRemarks String?
+  handledBy         String?
   createdById       String?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
+
+  followUps VisitorFollowUp[]
+}
+
+model VisitorFollowUp {
+  id          String   @id @default(cuid())
+  visitorId   String
+  visitor     Visitor  @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  date        DateTime
+  note        String?
+  result      String?
+  createdById String?
+  createdAt   DateTime @default(now())
+}
+
+model DailyReport {
+  id                   String   @id @default(cuid())
+  branchId             String
+  branch               Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  date                 DateTime
+  managerName          String?
+  childrenPresent      Int      @default(0)
+  studentAbsenceIssues Int      @default(0)
+  parentComplaints     Int      @default(0)
+  newInquiries         Int      @default(0)
+  staffAbsences        Int      @default(0)
+  staffConductIssues   Int      @default(0)
+  maintenanceIssues    Int      @default(0)
+  newEnrollments       Int      @default(0)
+  withdrawals          Int      @default(0)
+  overallStatus        String   @default("GOOD")
+  highlights           String?
+  createdById          String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@unique([branchId, date])
+}
+
+model BranchIssue {
+  id             String    @id @default(cuid())
+  branchId       String
+  branch         Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  date           DateTime
+  department     String
+  issueType      String
+  description    String
+  personInvolved String?
+  severity       String    @default("MEDIUM")
+  status         String    @default("OPEN")
+  actionTaken    String?
+  needsFollowUp  Boolean   @default(false)
+  followUpDate   DateTime?
+  notes          String?
+  createdById    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
 
 model Class {

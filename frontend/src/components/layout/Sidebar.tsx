@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
   BarChart3, BookOpen, Building2, CalendarDays, ClipboardList,
-  DollarSign, FileText, FileCheck2, LogOut, Menu, Users, Wrench, X,
+  ClipboardCheck, DollarSign, FileText, FileCheck2, LogOut, Menu, Users, Wrench, X,
   Languages,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -24,6 +24,7 @@ const navItems: NavItem[] = [
   { href: '/branches',       key: 'branches',   icon: <Building2 size={18} />, roles: ['SUPER_ADMIN', 'BRANCH_MANAGER'] },
   { href: '/documents',      key: 'documents',  icon: <FileCheck2 size={18} />, roles: ['SUPER_ADMIN', 'BRANCH_MANAGER'] },
   { href: '/visitors',       key: 'visitors',   icon: <ClipboardList size={18} />, roles: ['SUPER_ADMIN', 'BRANCH_MANAGER', 'STAFF'] },
+  { href: '/daily-reports',  key: 'dailyReports', icon: <ClipboardCheck size={18} />, roles: ['SUPER_ADMIN', 'BRANCH_MANAGER', 'STAFF'] },
   { href: '/classes',        key: 'classes',    icon: <BookOpen size={18} /> },
   { href: '/students',       key: 'students',   icon: <Users size={18} /> },
   { href: '/attendance',     key: 'attendance', icon: <CalendarDays size={18} /> },
