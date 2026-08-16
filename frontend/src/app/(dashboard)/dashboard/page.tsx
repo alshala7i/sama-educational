@@ -160,35 +160,15 @@ export default function DashboardPage() {
             const notRecorded = Math.max(total - present - absent, 0);
             const rate = total > 0 ? Math.round((present / total) * 100) : 0;
 
-            const theme = rate >= 80
-              ? {
-                  bg: 'from-emerald-500 to-teal-600',
-                  border: 'border-emerald-300',
-                  ring: 'ring-emerald-100 hover:ring-emerald-200',
-                  accent: 'bg-emerald-500',
-                }
-              : rate >= 50
-              ? {
-                  bg: 'from-amber-400 to-orange-500',
-                  border: 'border-amber-300',
-                  ring: 'ring-amber-100 hover:ring-amber-200',
-                  accent: 'bg-amber-400',
-                }
-              : {
-                  bg: 'from-rose-400 to-red-500',
-                  border: 'border-rose-300',
-                  ring: 'ring-rose-100 hover:ring-rose-200',
-                  accent: 'bg-rose-400',
-                };
-
             const presentPct = total > 0 ? (present / total) * 100 : 0;
             const absentPct  = total > 0 ? (absent  / total) * 100 : 0;
 
             return (
               <div key={branch.id}
-                className={`bg-white rounded-2xl border-2 ${theme.border} ring-4 ${theme.ring} shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden`}>
+                className="bg-white rounded-2xl border-2 border-[#1b6ca8]/50 ring-4 ring-[#0f4c75]/10 hover:ring-[#0f4c75]/20 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
 
-                <div className={`bg-gradient-to-l ${theme.bg} px-5 py-4 flex items-center justify-between`}>
+                <div className="px-5 py-4 flex items-center justify-between"
+                  style={{ background: 'linear-gradient(135deg, #0f4c75, #1b6ca8)' }}>
                   <div className="min-w-0">
                     <h3 className="text-white font-black text-base leading-tight truncate drop-shadow-sm">{branch.name}</h3>
                     <div className="flex items-center gap-1 mt-1">
